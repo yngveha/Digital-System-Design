@@ -15,9 +15,6 @@ When writing RTL code we believe that it is important, and possible, to write co
 In VHDL there are several ways to write code that will expose or avoid weaknesses or faults that frequently occur when humans create code. 
 Using AI to create code rarely helps in this matter, because of the poor availability of well written code in terms of verifiability openly online. 
 
-### Verification using testbenches or formal verification
-The art of writing testbenches is a category of its own. 
-
 ## When to avoid best practices? 
 There may be times where one may need to tweak code to achieve a better result in synthesis or faster simulation. 
 We will attempt to address some of these issues, however tweaking code should never be considered best practice on a general basis.
