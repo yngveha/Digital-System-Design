@@ -13,7 +13,7 @@ Having a course in digital design with several student assistants reading code, 
 ### Verification by tools
 When writing RTL code we believe that it is important, and possible, to write code in ways that will have the tools generate useful feedback at the earliest possible stage (compilation). 
 In VHDL there are several ways to write code that will expose or avoid weaknesses or faults that frequently occur when humans create code. 
-Using AI to create code rarely helps in this matter, because of the poor availability of well written code in terms of verifiability openly online. 
+Using AI to create code rarely helps in this matter, because of the poor availability of well documented code. 
 
 ## When to avoid best practices? 
 There may be times where one may need to tweak code to achieve a better result in synthesis or faster simulation. 
