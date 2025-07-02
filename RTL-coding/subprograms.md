@@ -1,11 +1,11 @@
-# Best practices using VHDL subprograms #
+# Best practices using VHDL subprograms: Use functions! #
 In synthesizable RTL-code, functions should always be preferred above procedures.
 
 ## Rationale 
 Functions will always compile into combinational logic. Procedures may be used to create feedback loops and latches, whether by intention or not. 
 
 Knowing that a subprogram does not infer latches makes verification easier. 
-If logic that should be combinational ends up not being combinational, the designer will get feedback at the earliest possible stage; compilation.
+Using functions, the designer will get feedback at the earliest possible stage, compilation, when logic that should be combinational ends up being non-combinational. 
 
 In contrast, when using a procedure, this cannot be taken for granted. This means higher effort must be used in verifying that the code does what it should. 
 Feedback on erronous behavior may be found during functional testing of the RTL code (testbench), it may be found during synthesis if feedback loops are present, however neither can be guaranteed. Formal verification may prove this, however using a function already formally proves that the content is combinational.  
@@ -77,18 +77,25 @@ end process;
 If we simulate this by feeding different input we may get something like this[^1]:
 ![Subprogram waveform](./subprog-sum.png)
 
-<sup>Waveform output from simple testing of function and procedure</sup>
+<sup>Waveform output from simple testing of function and procedure. 
+Here ```b``` contains the result from the function and ```c``` contains the result of the procedure. 
+Here both subprograms is supposed to calculate ```a0+a1+a2```
+</sup>
 [^1]: The procedure example does not compile with GHDL 5, this example was created at a time questa was used in our digital design course. There are ways of obtaining the same result in a procedure using GHDL 5, such as performing the addition using signed logic without a loop. That is, one example of poor code being caught in compilation does not mean every example of poor code will, it does not change what is best practice.   
 
-The cause for these outputs (b and c) being different is that the procedure causes a race. 
-By using the sum output in the calculation, what should be combinational becomes a loop that feeds itself. 
-This in turn would be probably throw a warning in synthesis, and it can be easily avoided in either the mother process or by utilizing a sum variable in the procedure that to hold all steps of the calculation before assigning the output. 
+The cause for ```b``` and ```c``` being different is that the procedure causes a feedback loop.
+During simulation the output is only calculated when the input changes, which means the procedural output may accumulate during simulation.  
+By using the sum output in the procedural calculation, what should be combinational becomes a loop that feeds itself. 
+
+A good synthesis tool will warn against this behavior since the output is not deterministic. 
+It can be avoided in either the mother process by setting ```sump := 0``` before using it in the procedure, or inside the procedure by utilizing a sum variable in the procedure that to hold all steps of the calculation before assigning the output. 
 However, the issue here is not fixing the problem once identified, it is that it is easy to overlook this type of error. 
 
 The complexity in this example is relatively low, yet it hides errors that can be avoided entirely, simply by using a function. 
 The fact that there are several places the issues with the procedure may be fixed, only adds to the problem: 
-'''One engineer may use a certain procedure safely, without issues, while another may use it in a way that leads to disastrous results, if not coded safely first.''' 
+_One engineer may use a certain procedure without issues, while another may use it in a way that leads to disastrous results._ 
 
+In sum, using functions is best practice, until there is a particular reason for using a procedure, see discussion below. 
 
 ## Counterexamples and limitations
 ### Multiple output vectors
