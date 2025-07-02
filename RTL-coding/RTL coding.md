@@ -18,8 +18,8 @@ The main reason for this is that testbenches are software programs that run sequ
 ### Verification by reading
 In general, code should be understood by humans. 
 In particular RTL code should be easy to understand paired with other documentation such as specifications and various diagrams. 
-While human readability will vary with the human reading the code, and what style they are used to. 
-There are elements that are common in most cases, and there are conventions that will lead to better readability when followed broadly. 
+While human readability will vary with the human reading the code, and what style they are used to, there are elements that are common in most cases. 
+There are also conventions that will lead to better readability when followed broadly. 
 
 ### Verification by tools
 When writing RTL code we believe that it is important to write code in ways that will have the tools generate useful feedback at the earliest possible stage.
