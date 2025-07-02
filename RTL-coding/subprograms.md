@@ -98,7 +98,7 @@ The complexity in this example is relatively low, yet it hides errors that can b
 The fact that there are several places the issues with the procedure may be fixed, only adds to the problem: 
 _One engineer may use a certain procedure without issues, while another may use it in a way that leads to disastrous results._ 
 
-In sum, using functions is best practice, until there is a particular reason for using a procedure, see discussion below. 
+In sum, using functions is best practice, until there is a particular reason for using a procedure.
 
 ## Counterexamples and limitations
 ### Multiple output vectors
