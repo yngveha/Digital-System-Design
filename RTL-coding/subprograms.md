@@ -81,7 +81,7 @@ If we simulate this by feeding different input we may get something like this[^1
 Here ```b``` contains the result from the function and ```c``` contains the result of the procedure. 
 Here both subprograms is supposed to calculate ```a0+a1+a2```
 </sup>
-[^1]: The procedure example does not compile with GHDL 5, this example was created at a time questa was used in our digital design course. There are ways of obtaining the same result in a procedure using GHDL 5, such as performing the addition using signed logic without a loop. That is, one example of poor code being caught in compilation does not mean every example of poor code will, it does not change what is best practice.   
+[^1]: The procedure example does not compile with GHDL 5, this example was created at a time questa was used in our digital design course. There are ways of obtaining the same result in a procedure using GHDL 5, such as performing the addition using signed logic without a loop. However, one example of poor code being caught in compilation does not mean every example of poor code will, and using functions will always be better practice.   
 
 The cause for ```b``` and ```c``` being different is that the procedure causes a feedback loop.
 During simulation the output is only calculated when the input changes, which means the procedural output may accumulate during simulation.  
