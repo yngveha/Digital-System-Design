@@ -162,4 +162,11 @@ begin
 
 end architecture structural;
 ```
-<sup>Top module connecting the components using a bus. The bus is the only resolved signal in use</sup>
+<sup>Top module connecting the components using a bus. The databus is the only resolved signal in use</sup>
+
+The module above showcases where the resolution function is required. 
+This is in stark contrast to most of the code found online, where mostly every signal is declared using resolved types. 
+
+## Comment to the creators of VHDL
+While resolution, and all the possible values in std_logic is necessary, it is inconvenient that the the **u** or **u_** must be added to use unresolved types. 
+It would be much more user friendly, and prevent a pile of unnecessary work, if the resolution function was the "exception" writing ```std_rlogic```, and not the other way around. If these were ever revised, shortening to something like ```slogic``` (unresolved) and ```rslogic``` (resolved) would make absolute sense.  
