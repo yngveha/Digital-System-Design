@@ -78,3 +78,8 @@ Casting does not change a signal, it only changes how the compiler interprets th
   temperature <= signed(in_vector);
   out_vector  <= std_logic_vector(counter);
 ```
+
+## Counter example and limitations
+The resolved std_logic is there for a reason in VHDL. 
+The main reason to use resolved types is when 
+
