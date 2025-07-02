@@ -107,7 +107,7 @@ An example of this would be a division or square root algorithm where the calcul
 In VHDL, this can be worked around using a record type output, combining all useful output of the function. 
 Now this step may come at the cost of convenience, since using all vectors requires packing and unpacking the record in use. 
 
-This inconvenience is a drawback, that technically could or should be adressed in future revisions of VHDL.  
+This inconvenience is a drawback, that technically could be adressed in future revisions of VHDL, if tuples were allowed as long as each element usage comply with type checking. 
 
 For the sake of verification, a procedure can be used to wrap a function using a record as output, when we do want the separate output without making the record definition public. 
 Adding extra layers sacrifices some readability, but it can be done such that it is easy to understand that only combinational logic is used, without digging into the details of what the function actually does.  
@@ -119,8 +119,8 @@ While tool dependent, this can be shown when switching between logically equival
 Fixing this goes into the category of tweaking code to please the synthesizer, which means we abandon readability and make verification harder. 
 
 However there is a way to secure a verifiable route: 
-* The first step then is to design and verify code using functions. 
-* Next step is creating the same functionality using a procedure. 
-* Last step is to formally verify (prove) logical equivalence between the function and the procedure. 
+* First: Design and verify code using functions. 
+* Next: Create the same functionality using a procedure. 
+* Last: Formally verify (prove) logical equivalence between the function and the procedure. 
 
 By keeping the code and verification results for each step, we have a chain of easily verifiable steps, which should be reassuring to anyone using the code. 
