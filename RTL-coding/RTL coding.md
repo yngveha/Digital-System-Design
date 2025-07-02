@@ -10,9 +10,10 @@ VHDL has built in strong type check which can be used to advantage, and VHDL-cod
 This does not mean Verilog cannot be set up in much the same way, but it is known to be less safe without restrained use. 
 VHDL can also be used in more or less safe manners, and the goal should be to achieve the highest degree of verifiability all the time. 
 
-[^1]: For the sake of verification, the convenience of using any hardware description language can be debated. 
+[^1]: The convenience of using any hardware description language for verification can be debated. 
 For the time being, we teach using co-simulation with cocotb and Python for verification. 
-We believe that the discussion on what is best suited for synthesis is best kept separate to that of verification languages.
+We believe that the discussion on what is best suited for synthesis is best kept separate to that of verification languages. 
+The main reason for this is that testbenches are software programs that run sequentially, in contrast to hardware descriptions forming circuits. 
 
 ### Verification by reading
 In general, code should be understood by humans. 
