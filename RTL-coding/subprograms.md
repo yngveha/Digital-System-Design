@@ -29,37 +29,49 @@ function sum_function(vect: integer_vector)return integer is
 ```
 
 ```vhdl
+-- example of bad practice leading to errors:
 procedure sum_proc(vect: in integer_vector; sum: out integer) is
-    variable s : integer;
-  begin -- this does not work with GHDL 5.
+  begin 
     for i in vect'range loop
       sum := sum + vect(i);
     end loop; 
   end;
 ```
+<sup>Procedure</sup>
 
-These are being implemented in an architecture process: 
+These are being implemented using the following entity and process: 
+```vhdl
+entity subprogram is
+  generic(k: positive:=4);
+  port(
+    a2,a1,a0 : in  std_ulogic_vector(k-1 downto 0);
+    b,c      : out std_ulogic_vector(k-1 downto 0) );
+end entity subprogram;
+```
+
 ```vhdl
 process(all) is
   variable v: integer_vector(2 downto 0);
   variable sumf, sump: integer;
-  variable sf, sp: signed(b'high-b'low downto b'low);
+  variable sf, sp: signed(c'range);
 begin
   v:=(
     to_integer(signed(a2)),
     to_integer(signed(a1)),
     to_integer(signed(a0)) );
+
+  -- subprogram use
   sumf := sum_function(v);
-  sf := to_signed(sumf, sf'length);
-  c <= std_logic_vector(sf);
-  
   sumproc(v, sump);
-  sp := to_signed(sumf, sp'length);
-  d <= std_logic_vector(sp);
-  
+
+  -- size and type conversion  
+  sf := to_signed(sumf, sf'length);
+  sp := to_signed(sump, sp'length);
+  b <= std_logic_vector(sf);
+  c <= std_logic_vector(sp);
+
 end process;
 ```
-<Simplify this by only using integers?>
 
 If we simulate this by feeding different input we may get something like this
 <To be added: simulation result image >
