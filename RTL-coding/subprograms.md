@@ -73,17 +73,20 @@ begin
 end process;
 ```
 
-If we simulate this by feeding different input we may get something like this
-<To be added: simulation result image >
+If we simulate this by feeding different input we may get something like this[^1]:
+![Subprogram waveform](./subprog-sum.png)
 
-The cause for these outputs being different is that the procedure causes a race. 
+<sup>Waveform output from simple testing of function and procedure</sup>
+[^1]: The procedure example does not compile with GHDL 5, this example was created at a time questa was used in our digital design course. There are ways of obtaining the same result in a procedure using GHDL 5, such as performing the addition using signed logic without a loop. That is, one example of poor code being caught in compilation does not mean every example of poor code will, it does not change what is best practice.   
+
+The cause for these outputs (b and c) being different is that the procedure causes a race. 
 By using the sum output in the calculation, what should be combinational becomes a loop that feeds itself. 
 This in turn would be probably throw a warning in synthesis, and it can be easily avoided in either the mother process or by utilizing a sum variable in the procedure that to hold all steps of the calculation before assigning the output. 
 However, the issue here is not fixing the problem once identified, it is that it is easy to overlook this type of error. 
 
 The complexity in this example is relatively low, yet it hides errors that can be avoided entirely, simply by using a function. 
 The fact that there are several places the issues with the procedure may be fixed, only adds to the problem: 
-One engineer may use a certain procedure safely, without issues, while another may use it in a way that leads to disastrous results, if not coded safely first. 
+'''One engineer may use a certain procedure safely, without issues, while another may use it in a way that leads to disastrous results, if not coded safely first.''' 
 
 
 ## Counterexamples and limitations
