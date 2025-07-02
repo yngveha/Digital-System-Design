@@ -1,5 +1,5 @@
-# Best practices using VHDL subprograms: Use functions! #
-In synthesizable RTL-code, functions should always be preferred above procedures.
+# Use functions! #
+In synthesizable RTL-modules, functions should always be preferred above procedures.
 
 ## Rationale 
 Hardware described in functions will always be inferred as combinational logic. Procedures may be used to create feedback loops and latches, whether by intention or not. 
