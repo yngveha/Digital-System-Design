@@ -30,6 +30,3 @@ Using AI to create code rarely helps in this matter, because of the poor availab
 ## When to avoid best practices? 
 There may be times where one may need to tweak code to achieve a better result in synthesis or faster simulation. 
 We will attempt to address some of these issues, however tweaking code should never be considered best practice on a general basis.
-
-At some point, if we know that our code works well logically, we may create tweaked code for the same purpose. 
-This code may then be formally proven equal to code generated using best practices. 
