@@ -80,6 +80,80 @@ Casting does not change a signal, it only changes how the compiler interprets th
 ```
 
 ## Counter example and limitations
-The resolved std_logic is there for a reason in VHDL. 
-The main reason to use resolved types is when 
+The main reason to use resolved types is when connecting multiple modules to a bus. 
+This, however, can usually be performed with a limited use of resolved types. 
 
+Consider this example:
+![Bus connection](./assets/resolved_unresolved.svg)
+
+<sup>Bus connecting modules</sup>
+
+Bus component for testing 
+```vhdl
+library IEEE;
+  use IEEE.std_logic_1164.all; 
+  
+entity buscomp is 
+port(
+  enable  : in std_ulogic;
+  indata  : in std_ulogic_vector(3 downto 0);
+  outdata : out std_ulogic_vector(3 downto 0));  
+end entity;
+
+architecture tristate of buscomp is
+begin 
+  outdata <= 
+    indata when enable else 
+    (others => 'Z');
+end architecture;
+```
+<sup>Bus component </sup>
+
+Top module, connecting a number of components.
+```vhdl
+library IEEE;
+  use IEEE.std_logic_1164.all; 
+
+entity bustop is 
+  port(
+    inA, inB   : in std_ulogic_vector(3 downto 0);
+    enA, enB : in std_ulogic;
+    outdata  : out std_ulogic_vector(3 downto 0) 
+  );
+end entity;
+
+architecture structural of bustop is
+  component buscomp is 
+    port(
+      enable  : in std_ulogic;
+      indata  : in std_ulogic_vector(3 downto 0);
+      outdata : out std_ulogic_vector(3 downto 0)
+    );  
+  end component;
+  
+  -- Resolved signal needed: 
+  signal databus : std_logic_vector(3 downto 0);
+  
+  -- Will cause comp error: 
+  -- signal databus : std_ulogic_vector(3 downto 0);
+
+begin 
+  COMP_A: buscomp
+  port map (
+    enable  => enA,
+    indata  => inA,
+    outdata => databus    
+  );
+  
+  COMP_B: buscomp
+  port map (
+    enable  => enB,
+    indata  => inB,
+    outdata => databus    
+  );
+  
+  outdata <= databus;
+
+end architecture structural;
+```
+<sup>Module with a bus. The bus is the only resolved signal in use</sup>
