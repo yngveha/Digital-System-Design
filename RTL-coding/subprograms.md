@@ -5,7 +5,8 @@ In synthesizable RTL-modules, functions should always be preferred above procedu
 Hardware described in functions will always be inferred as combinational logic. Procedures may be used to create feedback loops and latches, whether by intention or not. 
 
 Knowing that a subprogram does not infer latches makes verification easier. 
-Using functions, the designer will get feedback at the earliest possible stage, compilation, when logic that should be combinational ends up being non-combinational. 
+Using functions, the designer will get feedback at the earliest possible stage; compilation. 
+This is essential when logic that should be combinational ends up being non-combinational.  
 
 In contrast, when using a procedure, this cannot be taken for granted. This means higher effort must be used in verifying that the code does what it should. 
 Feedback on erronous behavior may be found during functional testing of the RTL code (testbench), it may be found during synthesis if feedback loops are present, however neither can be guaranteed. Formal verification may prove this, however using a function already formally proves that the content is combinational.  
@@ -13,6 +14,8 @@ Feedback on erronous behavior may be found during functional testing of the RTL 
 Procedures may infer registers, which can be one way to build structures equivalent to the use of components. 
 However, this is something you would do when writing structural code, rather than RTL-code. 
 Using structural coding within RTL-modules make verification more complex, which means mixing structure and RTL is not best practice.
+
+At the register transfer level, register usage should be visible, to allow the reader to assess the timing without having to search through libraries and components.
 
 ### Example and discussion
 
