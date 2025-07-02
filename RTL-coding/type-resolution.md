@@ -1,6 +1,9 @@
 # Use unresolved types!
 Use unresolved types when creating signals or ports, unless the resolution function is required. 
 
+In synthesizable VHDL, the resolution function is only required for buses connecting multiple drivers capable of high-impedance operation (tristate). 
+Resolution function is also useful when simulating circuits using weak signals such as pullup resistors, pulldown resistors or both.  
+
 ## Rationale
 Using the resolution function for ```std_logic```, ```signed``` and ```unsigned``` hides errors when a signal is assigned driver multiple times in an architecture. 
 By using unresolved types ```std_ulogic```, ```std_ulogic_vector```, ```u_signed``` and ```u_unsigned```, signals that are driven from multiple sources are discovered during compilation.
@@ -13,15 +16,15 @@ This goes especially when working late or reviewing code.
 By using unresolved types these errors are reported immediately, leading to faster learning and faster verification processes.  
 
 [^1]: For students being used to software programming, the concept of parallelism when describing hardware circuits can be hard to grasp. 
-This often results in attempts to assign signals using multiple statements in an architecture, in an attempt to achieve sequential behavior.  
-Similarly students that have trouble understanding register usage or default statements in processes often attempt resetting signals that are not used for registers.
-This means signals may work well during most or all functional verification, but fails during synthesis. 
+This often results in attempts to assign one or more signals using multiple statements in an architecture, in an attempt to achieve sequential behavior.  
+Similarly students that have trouble understanding register usage, or default statements in processes, often attempt resetting signals that are not used for registers.
+This can result in code that may work well during most or all RTL-verification, but fails during synthesis. 
 
 
 ## About resolution
 A resolved signal uses the resolution function to calculate the result when a signal is assigned by multiple sources. 
-Example: For a **std_logic** signal this means that a signal that is assigned to both 
-**'1'** and **'0'** in will be **'X'** during simulation. 
+Example: For a ```std_logic``` signal this means that a signal that is assigned to both 
+```'1'``` and ```'0'``` in will be ```'X'``` during simulation. 
 
 This can be useful when simulating bus interfaces with multiple connections featuring high-impedance operation. 
 In all other cases we want each signal to have a single source to generate their value. 
@@ -56,7 +59,7 @@ begin
 
 
 ## Switching to unresolved types 
-Using the std_logic_1164 and numeric_std libraries, we can simply add and ***u*** or ***u_*** in port- and signal declarations to achieve unresolved types, as shown in the example above.
+Using the ```std_logic_1164``` and ```numeric_std``` libraries, we can simply add and ***u*** or ***u_*** in port- and signal declarations to achieve unresolved types, as shown in the example above.
 As long as there is no buses connected to multiple sources involved, it should be safe to change every resolved signal to their unresolved counterparts. 
 A resolved signal can be used as a source to assign values to an unresolved signal and vice versa. 
 
@@ -84,11 +87,13 @@ The main reason to use resolved types is when connecting multiple modules to a b
 This, however, can usually be performed with a limited use of resolved types. 
 
 Consider this example:
+
 ![Bus connection](./assets/resolved_unresolved.svg)
 
 <sup>Bus connecting modules</sup>
 
-Bus component for testing 
+The code below has components that loop back the bus signal, to enable easy testing. 
+
 ```vhdl
 library IEEE;
   use IEEE.std_logic_1164.all; 
@@ -107,9 +112,10 @@ begin
     (others => 'Z');
 end architecture;
 ```
+
 <sup>Bus component </sup>
 
-Top module, connecting a number of components.
+
 ```vhdl
 library IEEE;
   use IEEE.std_logic_1164.all; 
@@ -156,4 +162,4 @@ begin
 
 end architecture structural;
 ```
-<sup>Module with a bus. The bus is the only resolved signal in use</sup>
+<sup>Top module connecting the components using a bus. The bus is the only resolved signal in use</sup>
