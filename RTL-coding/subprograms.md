@@ -1,0 +1,103 @@
+# Best practices using VHDL subprograms #
+In synthesizable RTL-code, functions should always be preferred above procedures.
+
+## Rationale 
+Functions will always compile into combinational logic. 
+
+Knowing that the method in use never creates latches, registers or other non-combinational logic that can be verified by reading. 
+If logic that should be combinational ends up not being combinational, the designer will get feedback at the earliest possible stage, compilation.
+
+In contrast, when using a procedure this cannot be taken for granted, which put a lot more effort into checking that the code does what it should. 
+Feedback on erronous behavior may be found during functional testing of the RTL code (testbench), it may be found during synthesis if race conditions are present, however neither can be guaranteed.   
+
+Procedures may contain registers, which can be one way to build structures equivalent to the use of components. 
+However, this is something you would do when writing structural code, rather than RTL-code. 
+Using structural coding within RTL-modules make verification more complex, which means mixing structure and RTL is not best practice.  
+
+### Example and discussion
+
+Consider these subprograms:
+```vhdl
+function sum_function(vect: integer_vector)return integer is
+    variable sum: integer:=0;
+  begin
+    for i in vect'range loop
+      sum := sum+vect(i);
+    end loop;
+    return sum;
+  end; 
+```
+
+```vhdl
+procedure sum_proc(vect: in integer_vector; sum: out integer) is
+    variable s : integer;
+  begin -- this does not work with GHDL 5.
+    for i in vect'range loop
+      sum := sum + vect(i);
+    end loop; 
+  end;
+```
+
+These are being implemented in an architecture process: 
+```vhdl
+process(all) is
+  variable v: integer_vector(2 downto 0);
+  variable sumf, sump: integer;
+  variable sf, sp: signed(b'high-b'low downto b'low);
+begin
+  v:=(
+    to_integer(signed(a2)),
+    to_integer(signed(a1)),
+    to_integer(signed(a0)) );
+  sumf := sum_function(v);
+  sf := to_signed(sumf, sf'length);
+  c <= std_logic_vector(sf);
+  
+  sumproc(v, sump);
+  sp := to_signed(sumf, sp'length);
+  d <= std_logic_vector(sp);
+  
+end process;
+```
+<Simplify this by only using integers?>
+
+If we simulate this by feeding different input we may get something like this
+<To be added: simulation result image >
+
+The cause for these outputs being different is that the procedure causes a race. 
+By using the sum output in the calculation, what should be combinational becomes a loop that feeds itself. 
+This in turn would be probably throw a warning in synthesis, and it can be easily avoided in either the mother process or by utilizing a sum variable in the procedure that to hold all steps of the calculation before assigning the output. 
+However, the issue here is not fixing the problem once identified, it is that it is easy to overlook this type of error. 
+
+The complexity in this example is relatively low, yet it hides errors that can be avoided entirely, simply by using a function. 
+The fact that there are several places the issues with the procedure may be fixed, only adds to the problem: 
+One engineer may use a certain procedure safely, without issues, while another may use it in a way that leads to disastrous results, if not coded safely first. 
+
+
+## Counterexamples and limitations
+### Multiple output vectors
+VHDL procedures are created to only allow changes in a single output vector. 
+When creating digital logic it is often desirable to have more than one output. 
+An example of this would be a division or square root algorithm where the calculations reveal a reminder or error along with the result, which may be useful. 
+
+#### Possible workaround
+In VHDL, this can be worked around using a record type output, combining all useful output of the function. 
+Now this step may come at the cost of convenience, since using all vectors requires packing and unpacking the record in use. 
+
+This inconvenience is a drawback, that technically could or should be adressed in future revisions of VHDL.  
+
+For the sake of verification, a procedure can be used to wrap a function using a record as output, when we do want the separate output without making the record definition public. 
+Adding extra layers sacrifices some readability, but it can be done such that it is easy to understand that only combinational logic is used, without digging into the details of what the function actually does.  
+
+
+### Getting the most out of synthesis
+Sometimes using a procedure will create better results in tools for certain manufacturers. 
+While tool dependent, this can be shown when switching between logically equivalent solutions. 
+Fixing this goes into the category of tweaking code to please the synthesizer, which means we abandon readability and make verification harder. 
+
+However there is a way to secure a verifiable route: 
+* The first step then is to design and verify code using functions. 
+* Next step is creating the same functionality using a procedure. 
+* Last step is to formally verify (prove) logical equivalence between the function and the procedure. 
+
+By keeping the code and verification results for each step, we have a chain of easily verifiable steps, which should be reassuring to anyone using the code. 
