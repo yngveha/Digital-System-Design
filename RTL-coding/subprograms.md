@@ -2,7 +2,7 @@
 In synthesizable RTL-code, functions should always be preferred above procedures.
 
 ## Rationale 
-Functions will always compile into combinational logic. Procedures may be used to create feedback loops and latches, whether by intention or not. 
+Hardware described in functions will always be inferred as combinational logic. Procedures may be used to create feedback loops and latches, whether by intention or not. 
 
 Knowing that a subprogram does not infer latches makes verification easier. 
 Using functions, the designer will get feedback at the earliest possible stage, compilation, when logic that should be combinational ends up being non-combinational. 
