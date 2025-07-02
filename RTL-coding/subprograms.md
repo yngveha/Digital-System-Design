@@ -27,6 +27,7 @@ function sum_function(vect: integer_vector)return integer is
     return sum;
   end; 
 ```
+<sup>Using a function is the best solution</sup>
 
 ```vhdl
 -- example of bad practice leading to errors:
@@ -37,7 +38,7 @@ procedure sum_proc(vect: in integer_vector; sum: out integer) is
     end loop; 
   end;
 ```
-<sup>Procedure</sup>
+<sup>procedure may cause erratic behavior, if it compiles [^1]</sup>
 
 These are being implemented using the following entity and process: 
 ```vhdl
