@@ -2,17 +2,17 @@
 In synthesizable RTL-code, functions should always be preferred above procedures.
 
 ## Rationale 
-Functions will always compile into combinational logic. 
+Functions will always compile into combinational logic. Procedures may be used to create feedback loops and latches, whether by intention or not. 
 
-Knowing that the method in use never creates latches, registers or other non-combinational logic that can be verified by reading. 
-If logic that should be combinational ends up not being combinational, the designer will get feedback at the earliest possible stage, compilation.
+Knowing that a subprogram does not infer latches makes verification easier. 
+If logic that should be combinational ends up not being combinational, the designer will get feedback at the earliest possible stage; compilation.
 
-In contrast, when using a procedure this cannot be taken for granted, which put a lot more effort into checking that the code does what it should. 
-Feedback on erronous behavior may be found during functional testing of the RTL code (testbench), it may be found during synthesis if race conditions are present, however neither can be guaranteed.   
+In contrast, when using a procedure, this cannot be taken for granted. This means higher effort must be used in verifying that the code does what it should. 
+Feedback on erronous behavior may be found during functional testing of the RTL code (testbench), it may be found during synthesis if feedback loops are present, however neither can be guaranteed. Formal verification may prove this, however using a function already formally proves that the content is combinational.  
 
-Procedures may contain registers, which can be one way to build structures equivalent to the use of components. 
+Procedures may infer registers, which can be one way to build structures equivalent to the use of components. 
 However, this is something you would do when writing structural code, rather than RTL-code. 
-Using structural coding within RTL-modules make verification more complex, which means mixing structure and RTL is not best practice.  
+Using structural coding within RTL-modules make verification more complex, which means mixing structure and RTL is not best practice.
 
 ### Example and discussion
 
