@@ -75,7 +75,7 @@ end process;
 ```
 
 If we simulate this by feeding different input we may get something like this[^1]:
-![Subprogram waveform](./subprog-sum.png)
+![Subprogram waveform](./assets/subprog-sum.png)
 
 <sup>Waveform output from simple testing of function and procedure. 
 Here ```b``` contains the result from the function and ```c``` contains the result of the procedure. 
