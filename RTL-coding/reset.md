@@ -40,7 +40,7 @@ Synchronous reset may be performed when assigning the next value: e.g.
 REGISTER_ASSIGNMENT:
   r_sum <= next_sum when rising_edge(clk);
 COMBINATIONAL_LOGIC:
-  next_sum <= (others =>'0') when reset else "0" & unsigned(a) + "0" & unsigned(b); 
+  next_sum <= (others =>'0') when reset else ("0" & unsigned(a) + "0" & unsigned(b)); 
 ```
 
 There are, however, few compelling reasons we know to do this. 
