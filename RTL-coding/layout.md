@@ -60,4 +60,4 @@ The tab key can be set to insert a certain number of spaces instead of the tab c
 This is how you can avoid pressing the space bar twice. 
 
 ## Counterexamples and limitations
-If you have compelling reasons to not let indentation match the hierarchy, please let us know in the discussions field (not set up by july 2025)
+If you have compelling cases or reasons to not let indentation match the hierarchy, please let us know in the discussions!
