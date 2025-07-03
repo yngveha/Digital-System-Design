@@ -24,7 +24,7 @@ Considering that there is little cost in making the indentation from the start, 
 **Poor (no) indenting**
 ```vhdl
 REGISTERS: process (clk) is 
-begin if rising_edge(clk) then 
+begin if rising_edge(clk) then
 count <= (others => '0') 
 when reset else std_logic_vector(next_count); 
 end if; end process;
@@ -60,4 +60,4 @@ The tab key can be set to insert a certain number of spaces instead of the tab c
 This is how you can avoid pressing the space bar twice. 
 
 ## Counterexamples and limitations
-If you have compelling cases or reasons to not let indentation match the hierarchy, please let us know in the discussions!
+If you have cases or compelling or reasons for when indentation should not match the hierarchy, please let us know in the discussions!
