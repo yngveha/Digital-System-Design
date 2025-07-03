@@ -51,10 +51,10 @@ busdata <=
   b when low_pri_flag else
   (others => '0');
 
--- latched when-else due to implicit behavior:
+-- TO BE AVOIDED: latched when-else due to implicit behavior:
 my_latch <= input when '1'; 
 
--- case not causing latches , without default statements
+-- fully defined case, without default statements
 process(all) is 
 begin 
   case state is 
@@ -77,25 +77,27 @@ begin
   end case;
 end process;
 
--- case not causing latches , with default statements
+-- case with default values
 process(all) is 
-begin 
+begin
+  -- default values:
   a <= '0';
   b <= '0';
   c <= '0';
   case state is 
-    when state_a =>
+    when state_a => -- b and c gets default value
       a <= '1';
-    when state_b =>
+    when state_b => -- a and c gets default value
       b <= '1';
-    when state_c => 
+    when state_c => -- a and b gets default value
       c <= '1';
     when others  =>    
       null; -- is telling reviewer we chose default values
   end case;
 end process;
 
--- case causing latches (by forgetting default values)
+-- TO BE AVOIDED: case causing latches (by forgetting default values)
+-- ie not setting all targets for all conditions
 process(all) is 
 begin 
   case state is 
@@ -110,6 +112,21 @@ begin
       b <= '0';
       c <= '0'; 
   end case;
+end process;
+
+-- TO BE AVOIDED: if causing latches (by not covering every condition)
+-- a, b and c is latched in case of state = state_b or any other state except state_a and state_c 
+process(all) is 
+begin 
+  if state = state_a then 
+      a <= '1';
+      b <= '0';
+      c <= '0';
+  elsif state = state_c then 
+      a <= '0';
+      b <= '0';
+      c <= '1';
+  end if;
 end process;
 
 ```
