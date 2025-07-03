@@ -25,7 +25,7 @@ Conditional statement overview in VHDL
 
 <!-- -->
 
-The with-select statement is the most restrictive and cannot create latches unless you actively feed back the signal to its assignment. 
+The **with-select** statement is the most restrictive and cannot create latches unless you actively feed back the signal to its assignment. 
 With-select statement requires every option for the input to be covered
 That is:
 ```vhdl
@@ -47,12 +47,16 @@ All the other statements will create latches if simply one condition or target i
 ```vhdl
 -- complete when-else (not latched) 
 busdata <= 
-  a when high_pri_flag = '1' else
+  a when high_pri_flag else
   b when low_pri_flag else
   (others => '0');
 
 -- TO BE AVOIDED: latched when-else due to implicit behavior:
-my_latch <= input when '1'; 
+my_latch <= input when enable;
+
+-- Explicit latch using when-else:
+-- By refering to self, we admit the purpose to whoever reviews the code. 
+my_latch <= input when enable else my_latch; 
 
 -- fully defined case, without default statements
 process(all) is 
@@ -132,8 +136,9 @@ end process;
 ```
 
 -   When in doubt...
-    -   Try **'with...select**'. This will force you to make visible
-        choices.
+    -   Try **'with...select**'. Will never cause latches unless by intention.
+    -   **case** is typically used for state-machines together with default values
+    -   **when else** is reader friendly, and can replace most ifs except register assignment.
 -   *Only* use **'if**'...
     -   When you need to prioritize conditions...
     -   and have multiple targets.
