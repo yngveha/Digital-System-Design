@@ -6,6 +6,8 @@ The advice will mostly concern VHDL for synthesizable designs and Python for tes
 ## Methods
 With this repository, the attempt is to provide a set of best practices and the rationale behind each practice. 
 That is, why is it this method is concidered best practice, and what are the limitations to when it is best practice. 
+
+A discussion section has been added to allow readers to create comments or suggestions
 ## Motivation
 By teaching digital system design for the past few years, we see that students often rely on internet sources when doing digital design. 
 At times sources are used blindly without considering strengths and pitfalls in the methodology presented. 
