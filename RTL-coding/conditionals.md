@@ -26,6 +26,28 @@ To help with deciding which conditional statement is sufficient, look at this ta
 <!-- -->
 The **if** statement is the _least restrictive_ and should thus be used _most restrictively_, as it has the _highest error potential_.
 
+When statements must be nested to achieve the desired effect[^1], **case** or **if** must be used at the first stage. 
+Nesting requires the use of processes. 
+```vhdl 
+STATEMENT_SELECTION: process(targets, conditions, nested) is 
+begin 
+  case targets is 
+    when single => 
+      statement <=                                    
+        "case"      when nested else
+        "when_else" when conditions > 1 else
+        "selected";
+    when multiple =>   
+      with conditions select statement <= 
+        "case" when conditions = 1, 
+        "if"   when others;
+  end case;
+end process;
+```
+
+[^1]: Boolean algebra may be used to avoid nesting, but that normally comes at the cost of readability. 
+We do not reccomend sacrificing readability to avoid nesting.  
+
 The **selected (with-select)** statement is the _most restrictive_ and cannot create latches unless you actively decide to do so. 
 The **selected** statement requires every option for the input to be covered to compile, and it has thus the _lowest error potential_:
 ```vhdl
@@ -190,13 +212,12 @@ end process;
     -   all conditions
 
 ## Counterexamples and limitations
-Technically, any conditional statement[^1] in VHDLcan be solved using a combination of concatenation and the **selected** statement. 
-Using concatenation solely to allow the use of more restrictive statements means sacrificing readability. 
+Technically, any (non-clocked[^2]) conditional statement in VHDLcan be solved using a combination of concatenation and the **selected** statement or boolean algebra. 
+Using concatenation or boolean algebra solely to allow the use of more restrictive statements means sacrificing readability. 
 Doing so will result in constructs that are meaningless for any other purposes, and cannot be reccomended. 
 Maintaining a structure that is meaningful is more important than using the most restrictive conditional statement. 
 
 However, over-use of the **if**-statement, largely due to the use of "single-process" methodology, is way more common mistake than over-use of the **selected** statement.
 Except for register assignment, the use of **if**-statements can in many cases be reduced greatly, with added benefits in both verifiability and readability. 
 
-[^1]: Without having tested, we cannot tell the outcome of using rising_edge() in a selected statement. 
-Perhaps "non-clocked conditional" statement would be the correct phrase. 
+[^2]: Without having tested, we cannot tell the outcome of using rising_edge() in a selected statement. 
