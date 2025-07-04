@@ -195,8 +195,8 @@ Using concatenation solely to allow the use of more restrictive statements means
 Doing so will result in constructs that are meaningless for any other purposes, and cannot be reccomended. 
 Maintaining a structure that is meaningful is more important than using the most restrictive conditional statement. 
 
-Having said this, over-use of the if-statement, largely due to the use of "single-process" methodology, is way more common mistake than over-use of the selected statement.
-Except for register assignment, the use of if-statements can in many cases be reduced greatly, with added benefits in both verifiability and readability.  
+However, over-use of the **if**-statement, largely due to the use of "single-process" methodology, is way more common mistake than over-use of the **selected** statement.
+Except for register assignment, the use of **if**-statements can in many cases be reduced greatly, with added benefits in both verifiability and readability. 
 
 [^1]: Without having tested, we cannot tell the outcome of using rising_edge() in a selected statement. 
 Perhaps "non-clocked conditional" statement would be the correct phrase. 
