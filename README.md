@@ -17,9 +17,14 @@ Students that rely heavily on internet sources throughout our courses tend to re
 The rationale for code found online may vary a lot, and it is not always clear to the students. 
 Code that is great for certain purposes, such as synthesis, may be difficult to modify without running into trouble because it was not well made for verification or modification. 
 
-By providing best practices and the rationale behind each practice, openly and searchable, we hope that our students will both find this information, and find it useful. 
+By providing best practices and the rationale behind each practice, openly and searchable, we hope that our students will both find this information and find it useful. 
 We also believe that what our set of best practices can be useful to engineers and students all over the world that do digital system design. 
 
-Ideally this repository should allow posting issues and suggestions, so that the best practices can be improved upon over time.
+## Suggestions, comments and questions
+Please post suggestions, comments and questions in the discussion section.  
 
-**Yngve Hafting, 2025-06-30**
+> [!NOTE] 
+> This work just started at the end of June 2025.
+> More content will be added throughout the autumn of 2025
+>
+> **Yngve Hafting, July 2025**
