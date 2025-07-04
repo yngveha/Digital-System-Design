@@ -5,7 +5,7 @@ When making conditional statements, the most restrictive statement should be pre
 Conditional statements that do not define all output targets for all conditions may result in unwanted behavior. 
 Typical unwanted behavior is latches or registers created from behavior meant to be combinational. 
 
-By using the most restrictive conditional statements, we limit the possibility of creating latches. 
+By using the most restrictive conditional statements, we get tool feedback at the earliest point possible.  
 
 ## Discussion with examples
 In VHDL there are many ways of describing the wanted conditional behavior of your design. 
@@ -25,7 +25,7 @@ Conditional statement overview in VHDL
 
 <!-- -->
 
-The **with-select** statement is the most restrictive and cannot create latches unless you actively feed back the signal to its assignment. 
+The **selected (with-select)** statement is the most restrictive and cannot create latches unless you actively feed back the signal to its assignment. 
 With-select statement requires every option for the input to be covered
 That is:
 ```vhdl
@@ -57,6 +57,17 @@ my_latch <= input when enable;
 -- Explicit latch using when-else:
 -- By refering to self, we admit the purpose to whoever reviews the code. 
 my_latch <= input when enable else my_latch; 
+```
+
+<sup>When-else examples. When else can be latched implicitly when omitting possible conditions</sup>
+
+Examples with case; all examples uses the same type declaration:
+
+```vhdl
+-- <state type declaration for all case examples>
+type statetype is (state_a, state_b, state_c, state_d);
+signal state: statetype;
+-- <...>
 
 -- fully defined case, without default statements
 process(all) is 
@@ -117,7 +128,12 @@ begin
       c <= '0'; 
   end case;
 end process;
+```
 
+<sup>Case based examples. Case requires every condition to be covered</sup>
+
+
+```vhdl
 -- TO BE AVOIDED: if causing latches (by not covering every condition)
 -- a, b and c is latched in case of state = state_b or any other state except state_a and state_c 
 process(all) is 
@@ -132,11 +148,12 @@ begin
       c <= '1';
   end if;
 end process;
-
 ```
 
+<sup>Latched example where not all conditions are covered</sup>
+
 -   When in doubt...
-    -   Try **'with...select**'. Will never cause latches unless by intention.
+    -   Try **'with...select**'. It will never cause latches unless by intention.
     -   **case** is typically used for state-machines together with default values
     -   **when else** is reader friendly, and can replace most ifs except register assignment.
 -   *Only* use **'if**'...
@@ -173,6 +190,13 @@ end process;
     -   all conditions
 
 ## Counterexamples and limitations
-The width-select statement is probably the most under-used statement in VHDL. 
-This is both because of its late arrival, and general laziness.  
+Technically, any conditional statement[^1] in VHDLcan be solved using a combination of concatenation and the selected statement. 
+Using concatenation solely to allow the use of more restrictive statements means sacrificing readability. 
+Doing so will result in constructs that are meaningless for any other purposes, and cannot be reccomended. 
+Maintaining a structure that is meaningful is more important than using the most restrictive conditional statement. 
 
+Having said this, over-use of the if-statement, largely due to the use of "single-process" methodology, is way more common mistake than over-use of the selected statement.
+Except for register assignment, the use of if-statements can in many cases be reduced greatly, with added benefits in both verifiability and readability.  
+
+[^1]: Without having tested, we cannot tell the outcome of using rising_edge() in a selected statement. 
+Perhaps "non-clocked conditional" statement would be the correct phrase. 
