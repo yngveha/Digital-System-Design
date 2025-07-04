@@ -11,13 +11,13 @@
   _Why not reset asynchronously?_
 * [Use conditional statements restrictively!](./conditionals.md)  
   ```vhdl
-   STATEMENT_SELECTION: process(targets, multiple_conditions, nested) is 
+   STATEMENT_SELECTION: process(targets, conditions, nested) is 
     begin 
       case targets is 
         when single => 
           statement <=                                    
             "case"      when nested else
-            "when_else" when multiple_conditions else
+            "when_else" when conditions > 1 else
             "selected";
         when multiple =>   
           with conditions select statement <= 
