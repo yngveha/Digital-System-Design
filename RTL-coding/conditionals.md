@@ -5,7 +5,7 @@ When making conditional statements, the most restrictive statement should be pre
 Conditional statements that do not define all output targets for all conditions may result in unwanted behavior. 
 Typical unwanted behavior is latches or registers created from behavior meant to be combinational. 
 
-By using the most restrictive conditional statements, we get tool feedback at the earliest point possible.  
+By using the most restrictive conditional statements, we get feedback from the tools at the earliest point possible.  
 
 ## Discussion with examples
 In VHDL there are many ways of describing the wanted conditional behavior of your design. 
@@ -18,16 +18,16 @@ To help with deciding which conditional statement is sufficient, look at this ta
 | **when ... else**   | Single   | Multiple   | Optional | Yes         |
 | **with ... select** | Single   | Single     | Optional | No          |
 
-Conditional statement overview in VHDL
+<sup>Conditional statement overview in VHDL</sup>
 
--   Target: How many signals/variables can be set if true?
--   Condition: Can the true condition be a statement?
+-   Target: How many signals/variables can be set for each condition?
+-   Condition: How many signals/variables can be used to determine the outcome?
 
 <!-- -->
+The **if** statement is the _least restrictive_ and should thus be used _most restrictively_, as it has the _highest error potential_.
 
-The **selected (with-select)** statement is the most restrictive and cannot create latches unless you actively feed back the signal to its assignment. 
-With-select statement requires every option for the input to be covered
-That is:
+The **selected (with-select)** statement is the _most restrictive_ and cannot create latches unless you actively decide to do so. 
+The **selected** statement requires every option for the input to be covered to compile, and it has thus the _lowest error potential_:
 ```vhdl
 -- non-latch.  
 with control select busdata <=
@@ -59,9 +59,9 @@ my_latch <= input when enable;
 my_latch <= input when enable else my_latch; 
 ```
 
-<sup>When-else examples. When else can be latched implicitly when omitting possible conditions</sup>
+<sup>**When-else** examples. When else can be latched implicitly when omitting possible conditions</sup>
 
-Examples with case; all examples uses the same type declaration:
+Examples with **case**; all examples uses the same type declaration:
 
 ```vhdl
 -- <state type declaration for all case examples>
@@ -130,7 +130,7 @@ begin
 end process;
 ```
 
-<sup>Case based examples. Case requires every condition to be covered</sup>
+<sup>**Case** based examples. Case requires every condition to be covered</sup>
 
 
 ```vhdl
@@ -190,7 +190,7 @@ end process;
     -   all conditions
 
 ## Counterexamples and limitations
-Technically, any conditional statement[^1] in VHDLcan be solved using a combination of concatenation and the selected statement. 
+Technically, any conditional statement[^1] in VHDLcan be solved using a combination of concatenation and the **selected** statement. 
 Using concatenation solely to allow the use of more restrictive statements means sacrificing readability. 
 Doing so will result in constructs that are meaningless for any other purposes, and cannot be reccomended. 
 Maintaining a structure that is meaningful is more important than using the most restrictive conditional statement. 
