@@ -1,4 +1,8 @@
 # Best practices for RTL testbenches
-* Separate stimuli and checker
+* [Separate stimuli and checker](testbenches/structure.md)
 * Apply stimuli synchronously, after clock in the event queue
 * Allow the event queue to resolve before checking
+
+> [!NOTE]
+> 2026, February : This is work in progress
+> 
