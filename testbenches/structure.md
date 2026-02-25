@@ -42,7 +42,7 @@ So, what distinguishes testbench code that scales well and that which scales poo
 ...
 ```
 
-If we look at the pseudo code above, it is obvious that the list soon grows tiresomly long, and that dependence between stimuli and data must be maintained manually. 
+If we look at the pseudo code above, it is obvious that the list easily grows tiresomly long, and that dependence between stimuli and data must be maintained manually. 
 This increases the level of frustration for each change necessary, and it is hard to see when we reach or test or coverage targets looking at the code. 
 
 ## What scales well?
@@ -149,8 +149,13 @@ The use of ```Combine``` will allow each task to complete fully, regardless of o
 
 > [!NOTE]
 > In the pseudocode the stimuli data, queues behavior and checks are global.
-> Make proper class encapsulations, file io, to suit the system complexity 
+> 
+> Make proper class encapsulations, file io, to suit the system complexity.
+>
+> The structure is not intended to be perfect or all-encompassing.
+> It is an abstraction of an example used in our Bachelor level digital system design course at UIO. 
 
 > [!NOTE]
 > The checks and stimuli are applied much in the same way as if they had their own process in VHDL.
+> 
 > VHDL does not have a built-in queue, and while it is possible to achieve, using a well suited software language may be easier to work with. 
