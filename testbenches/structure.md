@@ -131,20 +131,25 @@ async def check_B(dut):
          data_B = queue_B.get()
          assert <DUT status corresponds to data_B> ...
 
-checks = [check_A, check_B, check_C, ...]
-stimulants = [stim_A, stim_B, stim_C, ...]
+checks = [check_A(dut), check_B(dut), check_C(dut), ...]
+stimulants = [stim_A(dut), stim_B(dut), stim_C(dut), ...]
 ...
 @cocotb.test()
 async def test_schedule(dut):
      for each_check in checks:
-        start_soon(each_check(dut))
+        start_soon(each_check)
      for each_stim in stimulants:
-        start_soon(each_stim(dut))
-     await Combine(stimulants)
+        start_soon(each_stim) 
+     await Combine(stimulants) 
 ```
 
 Keeping modeled behavior, stimuli and checks separate it is easy to later make modifications or adding behavior.
 By letting the simulator run each check independently (start_soon), the simulator can perform each check at the appropriate time when the awaited triggers occur. 
+The use of ```Combine``` will allow each task to complete fully, regardless of order. 
+
+> [!NOTE]
+> In the pseudocode the stimuli data, queues behavior and checks are global.
+> Make proper class encapsulations, file io, to suit the system complexity 
 
 > [!NOTE]
 > The checks and stimuli are applied much in the same way as if they had their own process in VHDL.
