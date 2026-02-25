@@ -37,8 +37,28 @@ Typical examples where triggering can be used is when describing
   * Most checks in an RTL testbench can be made in a way that they stand alone and fires at the correct time, regardless of the number of uses.       
 
 #### Using Queues to pass data
+The software backbone required to write standalone stimuli and checks often require ways of passing data within the testbench. 
+Data fed into the DUT at some point usually ends up being compared to a golden model or some sort of validated results at a later stage. 
+To avoid having to create structures that wait between each stimuli injected and its corresponding check, queues can be fed the data later used when the check is triggered. 
+Having multiple data queues add very little structure compared to having to sort data upon arrival when checks may be required unordered. 
+By using queues for data as the go-to solution, we alleviate scaling issues before they occur. 
 
-### Each check on its own
+The same _can be achieved_ using FIFO buffers. 
+While this may be easy enough for a hardware engineer, adding hardware modules in a software module may increase complexity in ways that are not required. 
+> [!NOTE]
+> While the term FIFO (First in First out) technically does not need to mean hardware FIFO, this is the point where it makes sense to separate between hardware and software constructs.
+> In this context we use the term Queue for software queues, which do not need the same sort of instantiation that a hardware FIFO component would.
 
-### Each model on its own. 
+Using queues we have to make sure the queues are created in a context that is available to all methods that use them. 
+In a small scale test, queues may be global. 
+For larger tests, queues may be passed as parameters to the test objects in use. 
 
+#### Each check on its own
+Rather than tying each check to specific data passed, it is generally more useful to apply a check when the correct situation occurs using a trigger. 
+By having each check written separately, and in one spot, it is easy to understand whether we are able perform the checks according to our test specification. 
+
+#### Each model on its own. 
+When a system become a composition of several components, and we only want to test or make one, it is often useful to create models of the other components. 
+This way we can focus on making sure each model does what it should, rather than creating a long list of intertwined stimuli data, where every new event must happen in coherence with the everything else. 
+In software we can create model-components as object reacting more or less autonomous, or we can create an API for the model that we use when called for.   
+When model behavior reaches the size of more than a couple methods, it may be useful to encapsulate the behavior and code into a separate class. 
