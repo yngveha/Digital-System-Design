@@ -13,6 +13,37 @@ So, what distinguishes testbench code that scales well and that which scales poo
 
 ## What scales poorly
 ### Intertwined stimuli and checks
+```
+<Apply stimuli "A1">
+<wait for A1 to resolve>
+<check "A1" response>
+
+<Apply stimuli "B1">
+<wait for B1 to resolve>
+<check "B1" response>
+
+<Apply stimuli "A2">
+<wait for A2 to resolve>
+<check "A2" response>
+
+<Apply stimuli "C1">
+<wait for C1 to resolve>
+<check "C1" response>
+
+<Apply stimuli "A3">
+<wait for A3 to resolve>
+<check "A3" response>
+
+<Apply stimuli "B2">
+<wait for B1 to resolve>
+<check "B1" response>
+...
+<etc.>
+...
+```
+
+If we look at the pseudo code above, it is obvious that the list soon grows tiresomly long, and that dependence between stimuli and data must be maintained manually. 
+This increases the level of frustration for each change necessary, and it is hard to see when we reach or test or coverage targets looking at the code. 
 
 ## What scales well?
 By acknowledging that testbenches are software, whether it is written in VHDL, System Verilog, System C, C, Python or any other language, we accept that normal practices for good software also applies to testbenches. 
@@ -60,5 +91,61 @@ By having each check written separately, and in one spot, it is easy to understa
 #### Each model on its own. 
 When a system become a composition of several components, and we only want to test or make one, it is often useful to create models of the other components. 
 This way we can focus on making sure each model does what it should, rather than creating a long list of intertwined stimuli data, where every new event must happen in coherence with the everything else. 
+
 In software we can create model-components as object reacting more or less autonomous, or we can create an API for the model that we use when called for.   
 When model behavior reaches the size of more than a couple methods, it may be useful to encapsulate the behavior and code into a separate class. 
+
+## Example
+Below is python pseudocode that mimics much behavior described above (not all). 
+An executable example is on the IN3160 course github (available to UIO students and staff). 
+
+```python
+data_A = [<A1>, <A2>, <A3>, ...]
+data_B = [<B1>, <B2>, ...]
+data_C = [<C1>,  ...]
+
+queue_A = Queue()
+queue_B = Queue()
+queue_C = Queue()
+...
+def stim_A(dut):
+    for each in data_A:
+        <perform model A behavior for each data>
+        queue_A.add(each)
+def stim_B(dut):
+    for each in data_B:
+        <perform model B behavior for each data>
+        queue_B.add(each)
+def stim_C(dut):
+    ... <similar to A and B, but specific for C>
+...
+async def check_A(dut):
+     while True:
+         await <A's trigger>
+         data_A = queue_A.get()
+         assert <DUT status corresponds to data_A> ...
+
+async def check_B(dut):
+     while True:
+         await <B's trigger>
+         data_B = queue_B.get()
+         assert <DUT status corresponds to data_B> ...
+
+checks = [check_A, check_B, check_C, ...]
+stimulants = [stim_A, stim_B, stim_C, ...]
+...
+@cocotb.test()
+async def test_schedule(dut):
+     for each_check in checks:
+        start_soon(each_check(dut))
+     for each_stim in stimulants:
+        start_soon(each_stim(dut))
+     await Combine(stimulants)
+```
+
+Keeping modeled behavior, stimuli and checks separate it is easy to later make modifications or adding behavior.
+By letting the simulator run each check independently (start_soon), the simulator can perform each check at the appropriate time when the awaited triggers occur. 
+
+> [!NOTE]
+> The checks and stimuli are applied much in the same way as if they had their own process in VHDL.
+> VHDL does not have a built-in queue, and while it is possible to achieve, using a well suited software language may be easier to work with. 
